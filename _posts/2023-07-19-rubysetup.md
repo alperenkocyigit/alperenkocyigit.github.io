@@ -51,7 +51,7 @@ In this tutorial you can download `Ruby 3.2.2` with terminal.
 
     You can check the outputs of `rbenv -v` , `ruby -v` , `rbenv local` , `rbenv global` 
 
-    ![Version Outputs](https://media.discordapp.net/attachments/1129424133143412756/1129775958975586364/Screenshot_from_2023-07-15_17-05-38.png){: .left }
+    ![Version Outputs](https://media.discordapp.net/attachments/1129424133143412756/1129775958975586364/Screenshot_from_2023-07-15_17-05-38.png)
 
 
 Now you successfully installed Ruby 3.2.2.
