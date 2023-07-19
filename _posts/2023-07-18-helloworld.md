@@ -3,6 +3,7 @@ title: About Me
 date: 2023-07-18 12:00:00 -500
 categories: [AboutMe]
 tags: [alperenkocyigit,aboutme]     # TAG names should always be lowercase
+pin: true
 ---
 
 # Alperen Koçyiğit
