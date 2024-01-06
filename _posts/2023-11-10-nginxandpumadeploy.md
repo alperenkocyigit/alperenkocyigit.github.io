@@ -176,9 +176,7 @@ Install essential packages
 ```shell
     sudo apt-get install texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra
 ```
-* Texlive-Xetex For
-`pdf_engine: :xelatex`
-
+* Texlive-Xetex For `pdf_engine: :xelatex`
 ```shell
     sudo apt-get install texlive-xetex
 ```
