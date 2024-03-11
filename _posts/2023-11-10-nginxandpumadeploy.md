@@ -1,6 +1,6 @@
 ---
 title: How To Deploy Rails API Only App With Nginx and Puma
-date: 2023-11-10 12:00:00 -500
+date: 2024-03-11 12:00:00 -500
 categories: [Tutorials,Ruby]
 tags: [alperenkocyigit,ruby,rails,howto]
 ---
@@ -186,7 +186,38 @@ Install essential packages
     iptables -A INPUT -s 192.168.1.1 -j DROP
 ```
 
-## How to Run Puma Server With Comfiguration
+## Systemctl puma.service File
+
+> Change your_app_path to your app_path!!
+{: .prompt-warning }
+
+```bash
+
+    [Unit]
+    Description=Rails Puma Server
+    After=network.target
+
+    [Service]
+    User=deploy
+
+    WorkingDirectory=/var/www/your_app_path
+
+    ExecStart=/home/deploy/.rbenv/shims/bundle exec puma -C /var/www/your_app_path/config/puma.rb
+
+    PIDFile=/var/www/your_app_path/shared/pids/puma.pid
+    Restart=always
+    [Install]
+    WantedBy=multi-user.target
+```
+
+## How to Run Puma Server With Configuration 
+```bash
+    systemctl daemon-reload
+    systemctl start puma.service
+    systemctl status puma.service
+```
+
+## How to Run Puma Server With Configuration (Alternative)
 ```bash
     bundle exec puma -C ./config/puma.rb
 ```
