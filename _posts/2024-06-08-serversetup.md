@@ -204,18 +204,17 @@ server {
 * sudo nano /etc/systemd/system/puma.service
 ```shell
     [Unit]
-    Description=Rails Puma Server
+    Description=Puma HTTP Server for Rails Application
     After=network.target
 
     [Service]
     User=deploy
-
-    WorkingDirectory=/var/www/your_app_path
-
-    ExecStart=/home/deploy/.rbenv/shims/bundle exec puma -C /var/www/your_app_path/config/puma.rb
-
-    PIDFile=/var/www/your_app_path/shared/pids/puma.pid
+    Group=deploy
+    WorkingDirectory=/var/www/your-path
+    ExecStart=/home/deploy/.rbenv/shims/puma -C /var/www/your-path/config/puma.rb
     Restart=always
+    Environment="RAILS_ENV=production"
+
     [Install]
     WantedBy=multi-user.target
 ```
@@ -236,6 +235,17 @@ Install essential packages
 ```
 
 ### Last Steps
+
+```bash
+    sudo chmod 777 www/
+```
+```bash
+    git clone "repo-url"
+```
+```bash
+    cd repo-path
+```
+
 * Change to root path of app
 ```bash
     bundle install
@@ -246,10 +256,7 @@ Install essential packages
 ```bash
     EDITOR='nano' rails credentials:edit --environment production
 ```
-* Set env to production
-```bash
-    export RAILS_ENV=production
-```
+
 * Create Puma socket file structre
 ```bash
     mkdir /var/www/app-path/shared
@@ -260,9 +267,9 @@ Install essential packages
 
 * Run Puma Server With Configuration
 ```bash
-    systemctl daemon-reload
-    systemctl start puma.service
-    systemctl status puma.service
+    sudo systemctl daemon-reload
+    sudo systemctl start puma.service
+    sudo systemctl status puma.service
 ```
 
 # R-Python Server Side
