@@ -125,24 +125,6 @@ tags: [alperenkocyigit,howto]
     ruby 3.2.2 (2023-03-30 revision e51014f9c0) [x86_64-linux]
 ```
 
-### Install Rails
-
-```bash
-    gem search '^rails$' --all
-```
-
-```bash
-    gem install rails -v 7.0.8
-```
-
-```bash
-    rbenv rehash
-```
-
-```bash
-    rails -v
-```
-
 ### Install PostgreSQL
 
 ```bash
