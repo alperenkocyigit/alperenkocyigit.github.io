@@ -66,6 +66,16 @@ tags: [alperenkocyigit,howto]
 
 ## Ruby
 
+### Create Deploy User First
+
+```bash
+    adduser deploy
+```
+```bash
+    adduser deploy sudo
+```
+* Change to deploy user before installing ruby!!
+
 ### Install Ruby
 
 ```bash
@@ -133,23 +143,126 @@ tags: [alperenkocyigit,howto]
     rails -v
 ```
 
-### Create Deploy User
-
-```bash
-    adduser deploy
-```
-```bash
-    adduser deploy sudo
-```
-
 ### Install PostgreSQL
 
 ```bash
     sudo apt-get update
 ```
-
 ```bash
     sudo apt-get install postgresql postgresql-contrib libpq-dev
+```
+* Create Database
+```bash
+    sudo apt-get install postgresql postgresql-contrib libpq-dev
+    sudo su - postgres
+    createuser --pwprompt deploy
+    createdb -O deploy myapp
+    exit
+```
+
+### Configure Nginx Config File
+
+```etc/nginx/sites-available/appname
+upstream puma {
+    server unix:/var/www/your-path/shared/sockets/puma.sock fail_timeout=0;
+}
+
+server {
+    listen 80;
+    server_name your-path;
+
+    root /var/www/your-path/public;
+
+    access_log /var/www/your-path/log/nginx.access.log;
+    error_log /var/www/your-path/log/nginx.error.log info;
+
+    location ^~ /assets/ {
+        gzip_static on;
+        expires max;
+        add_header Cache-Control public;
+    }
+
+    try_files $uri/index.html $uri @puma;
+    location @puma {
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+        proxy_redirect off;
+        proxy_pass http://puma;
+    }
+
+    error_page 500 502 503 504 /500.html;
+    client_max_body_size 4G;
+    keepalive_timeout 10;
+}
+```
+
+```bash
+    sudo ln -s /etc/nginx/sites-available/appname /etc/nginx/sites-enabled/
+```
+
+### Add Systemctl puma.service File
+* sudo nano /etc/systemd/system/puma.service
+```shell
+    [Unit]
+    Description=Rails Puma Server
+    After=network.target
+
+    [Service]
+    User=deploy
+
+    WorkingDirectory=/var/www/your_app_path
+
+    ExecStart=/home/deploy/.rbenv/shims/bundle exec puma -C /var/www/your_app_path/config/puma.rb
+
+    PIDFile=/var/www/your_app_path/shared/pids/puma.pid
+    Restart=always
+    [Install]
+    WantedBy=multi-user.target
+```
+
+## Install Ruby Packages
+Install essential packages
+* Pandoc
+```shell
+    sudo apt-get install pandoc
+```
+* Pdf-Latex
+```shell
+    sudo apt-get install texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra
+```
+* Texlive-Xetex For `pdf_engine: :xelatex`
+```shell
+    sudo apt-get install texlive-xetex
+```
+
+### Last Steps
+* Change to root path of app
+```bash
+    bundle install
+```
+
+* Add config/credentials/production.key
+* Check credentials
+```bash
+    EDITOR='nano' rails credentials:edit --environment production
+```
+* Set env to production
+```bash
+    export RAILS_ENV=production
+```
+* Create Puma socket file structre
+```bash
+    mkdir /var/www/app-path/shared
+    mkdir /var/www/app-path/shared/sockets
+    mkdir /var/www/app-path/shared/pids
+    mkdir /var/www/app-path/shared/log
+```
+
+* Run Puma Server With Configuration
+```bash
+    systemctl daemon-reload
+    systemctl start puma.service
+    systemctl status puma.service
 ```
 
 # R-Python Server Side
